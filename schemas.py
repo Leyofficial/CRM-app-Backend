@@ -11,7 +11,7 @@ class Customer(BaseModel):
     id: int
 
 
-class CustomerInfo(Customer):
+class CustomerInfo(BaseModel):
     first_name: str
     last_name: str
     email: str
@@ -25,5 +25,9 @@ class CustomerInfo(Customer):
         orm_mode = True
 
 
+class CustomerAllInfo(CustomerInfo, Customer):
+    pass
+
+
 class Customers(StatusDetails):
-    customers: list[CustomerInfo]
+    customers: list[CustomerAllInfo]
