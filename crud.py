@@ -1,12 +1,8 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 import models
-from schemas import CustomerInfo
-
-
-def get_last_customer_id(db: Session):
-    last_customer = db.query(models.Customers).order_by(models.Customers.id.desc()).first()
-    return last_customer.id if last_customer else 0
-
+from schemas import CustomerInfo, Task
 
 def get_all_customers(db: Session):
     return db.query(models.Customers).all() or []
@@ -22,9 +18,7 @@ def create_customer(db: Session, customer: CustomerInfo):
     if existing_customer:
         return None
 
-    id = get_last_customer_id(db)
-    db_customer = models.Customers(**customer.dict(), id=id + 1)
-
+    db_customer = models.Customers(**customer.dict())
     db.add(db_customer)
     db.commit()
     db.refresh(db_customer)
@@ -40,3 +34,20 @@ def delete_customer(db: Session, id: int):
     db.delete(customer)
     db.commit()
     return True
+
+
+def create_task(db: Session, task: Task):
+    try:
+        date_obj = datetime.strptime(task.date, '%Y-%m-%d').date()
+    except ValueError:
+        return {"error": "Invalid type"}
+
+    db_task = models.Tasks(description=task.description, date=date_obj)
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return db_task
+
+
+def get_all_tasks(db: Session):
+    return db.query(models.Tasks).all() or []
