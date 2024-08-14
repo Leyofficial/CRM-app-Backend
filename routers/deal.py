@@ -5,7 +5,8 @@ from dependencies import get_db
 from schemas import Deal, StatusDetails, DealInfo, Deals
 
 router = APIRouter(
-    prefix="/api"
+    prefix="/api",
+    tags=["deals"]
 )
 
 
