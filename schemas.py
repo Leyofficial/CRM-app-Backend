@@ -47,14 +47,14 @@ class Task(BaseModel):
 
 
 class TaskInfo(Task, Id):
-    pass
+    is_done: bool
 
 
 class Tasks(StatusDetails):
     tasks: list[TaskInfo]
 
 
-class Deal(AddressDetails, CustomerId):
+class Deal(AddressDetails, CustomerId, Id):
     area: int
     people: int
     date: date
