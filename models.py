@@ -22,3 +22,21 @@ class Tasks(Base):
     id = Column(Integer, primary_key=True)
     description = Column(String(255), nullable=False)
     date = Column(Date, nullable=False)
+
+
+class Deals(Base):
+    __tablename__ = "deals"
+
+    id = Column(Integer, primary_key=True)
+    customer_id = Column(Integer, nullable=False)
+    address = Column(String, nullable=True)
+    city = Column(String, nullable=True)
+    province = Column(String, nullable=True)
+    zip = Column(String, nullable=True)
+    area = Column(Integer, nullable=False)
+    people = Column(Integer, nullable=False)
+    date = Column(Integer, nullable=False)
+    instructions = Column(String, nullable=True)
+    roomAccess = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False)
+    progress = Column(String, nullable=False)

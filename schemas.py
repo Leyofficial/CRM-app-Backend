@@ -1,25 +1,33 @@
-from typing import Dict, Any
+from typing import Dict, Any, Literal
 from pydantic import BaseModel
 from datetime import date
-
-class StatusDetails(BaseModel):
-    status: int
-    detail: str | Dict[str, Any]
 
 
 class Id(BaseModel):
     id: int
 
 
-class CustomerInfo(BaseModel):
-    first_name: str
-    last_name: str
-    email: str
-    phone: str
+class CustomerId(BaseModel):
+    customer_id: int
+
+
+class StatusDetails(BaseModel):
+    status: int
+    detail: str | Dict[str, Any]
+
+
+class AddressDetails(BaseModel):
     address: str | None = None
     city: str
     province: str | None = None
     zip: str | None = None
+
+
+class CustomerInfo(AddressDetails):
+    first_name: str
+    last_name: str
+    email: str
+    phone: str
 
     class Config:
         orm_mode = True
@@ -44,3 +52,24 @@ class TaskInfo(Task, Id):
 
 class Tasks(StatusDetails):
     tasks: list[TaskInfo]
+
+
+class Deal(AddressDetails, CustomerId):
+    area: int
+    people: int
+    date: date
+    instructions: str
+    roomAccess: str
+    price: int
+    progress: Literal["in progress", "done", "closed"]
+
+    class Config:
+        orm_mode = True
+
+
+class DealInfo(StatusDetails):
+    deal: Deal
+
+
+class Deals(StatusDetails):
+    deals: list[Deal]
