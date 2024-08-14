@@ -16,8 +16,14 @@ def create_customer(data: CustomerInfo, db: Session = Depends(get_db)):
     return {'status': 200, 'detail': 'Success!'}
 
 
+@router.get("/customer/{id}", response_model=CustomerInfo)
+def get_customer(id: int, db: Session = Depends(get_db)):
+    customer = crud.get_customer(db, id)
+    return {'status': 200, 'detail': 'Success!', 'customer': customer}
+
+
 @router.get("/customers", response_model=Customers)
-def get_customer(db: Session = Depends(get_db)):
+def get_customers(db: Session = Depends(get_db)):
     customers = crud.get_all_customers(db)
     return {'status': 200, 'detail': 'Success!', 'customers': customers}
 

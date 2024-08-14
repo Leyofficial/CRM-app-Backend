@@ -61,6 +61,13 @@ def create_task(db: Session, task: Task):
         raise HTTPException(status_code=400, detail=f"Failed to create task: {str(error)}")
 
 
+def get_task(db: Session, task_id: int):
+    task = db.query(models.Customers).filter(models.Tasks.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found!")
+    return task
+
+
 def get_all_tasks(db: Session):
     return db.query(models.Tasks).all() or []
 

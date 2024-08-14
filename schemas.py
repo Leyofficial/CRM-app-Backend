@@ -23,7 +23,7 @@ class AddressDetails(BaseModel):
     zip: str | None = None
 
 
-class CustomerInfo(AddressDetails):
+class Customer(AddressDetails):
     first_name: str
     last_name: str
     email: str
@@ -33,7 +33,11 @@ class CustomerInfo(AddressDetails):
         orm_mode = True
 
 
-class CustomerAllInfo(CustomerInfo, Id):
+class CustomerInfo(StatusDetails):
+    customer: Customer
+
+
+class CustomerAllInfo(Customer, Id):
     pass
 
 

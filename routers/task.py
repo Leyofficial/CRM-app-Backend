@@ -14,6 +14,10 @@ def create_task(data: Task, db: Session = Depends(get_db)):
     crud.create_task(db, data)
     return {'status': 200, 'detail': 'Success!'}
 
+@router.get("/task/{id}")
+def get_task(id: int, db: Session = Depends(get_db)):
+    task = crud.get_task(db, id)
+    return {'status': 200, 'detail': 'Success!', 'task': task}
 
 @router.get("/tasks", response_model=Tasks)
 def get_tasks(db: Session = Depends(get_db)):
