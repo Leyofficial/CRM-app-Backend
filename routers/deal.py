@@ -16,6 +16,12 @@ def create_deal(data: Deal, db: Session = Depends(get_db)):
     return {"status": 200, "detail": "Success!"}
 
 
+@router.get("/deal/{customer_id}", response_model=Deals)
+def get_deal_by_customer_id(customer_id: int, db: Session = Depends(get_db)):
+    user_deals = crud.get_deal_by_customer_id(db, customer_id)
+    return {"status": 200, "detail": "Success!", "deals": user_deals}
+
+
 @router.get("/deal/{id}", response_model=DealInfo)
 def get_deal(id: int, db: Session = Depends(get_db)):
     deal = crud.get_deal(db, id)

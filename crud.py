@@ -120,6 +120,18 @@ def create_deal(db: Session, deal: Deal):
         raise HTTPException(status_code=400, detail=f"Failed to create deal: {str(error)}")
 
 
+def get_deal_by_customer_id(db: Session, customer_id: int):
+    customer = get_customer(db, customer_id)
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found!")
+
+    deals = db.query(models.Deals).filter(models.Deals.customer_id == customer_id).all()
+    if not deals:
+        raise HTTPException(status_code=404, detail="No deals found for this customer!")
+
+    return deals
+
+
 def get_deal(db: Session, id: int):
     deal = db.query(models.Deals).filter(models.Deals.id == id).first()
 
