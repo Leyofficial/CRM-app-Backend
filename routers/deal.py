@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 import crud
 from dependencies import get_db
-from schemas import Deal, StatusDetails, DealDetails, Deals, DealInfo
+from schemas import Deal, StatusDetails, DealDetails, Deals
 
 router = APIRouter(
     prefix="/api",

@@ -1,5 +1,3 @@
-from fastapi import FastAPI
-
 import models
 from database import engine
 from fastapi import FastAPI, HTTPException, Request
