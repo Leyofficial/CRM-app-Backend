@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 import crud
 from dependencies import get_db
-from schemas import StatusDetails, CustomerInfo, Customers
+from schemas import StatusDetails, CustomerInfo, Customers, Customer
 
 router = APIRouter(
     prefix="/api",
@@ -27,6 +27,12 @@ def get_customer(id: int, db: Session = Depends(get_db)):
 def get_customers(db: Session = Depends(get_db)):
     customers = crud.get_all_customers(db)
     return {'status': 200, 'detail': 'Success!', 'customers': customers}
+
+
+@router.put("/customer/{id}", response_model=CustomerInfo)
+def change_customer(id: int, customer_data: Customer, db: Session = Depends(get_db)):
+    updated_customer = crud.change_customer(db, id, customer_data)
+    return {"status": 200, "detail": "Customer updated successfully", "customer": updated_customer}
 
 
 @router.delete("/customer/{id}", response_model=StatusDetails, status_code=201)

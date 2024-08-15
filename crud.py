@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 import models
-from schemas import CustomerInfo, Task, Deal
+from schemas import CustomerInfo, Task, Deal, Customer
 
 
 def get_all_customers(db: Session):
@@ -13,6 +13,25 @@ def get_customer(db: Session, user_id: int):
     customer = db.query(models.Customers).filter(models.Customers.id == user_id).first()
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found!")
+    return customer
+
+
+def change_customer(db: Session, user_id: int, customer_data: Customer):
+    customer = get_customer(db, user_id)
+
+    customer.id = user_id
+    customer.first_name = customer_data.first_name
+    customer.last_name = customer_data.last_name
+    customer.email = customer_data.email
+    customer.phone = customer_data.phone
+    customer.address = customer_data.address
+    customer.city = customer_data.city
+    customer.province = customer_data.province
+    customer.zip = customer_data.zip
+
+    db.commit()
+    db.refresh(customer)
+
     return customer
 
 
