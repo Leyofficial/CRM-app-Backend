@@ -32,7 +32,7 @@ def get_customers(db: Session = Depends(get_db)):
 @router.put("/customer/{id}", response_model=CustomerInfo)
 def change_customer(id: int, customer_data: Customer, db: Session = Depends(get_db)):
     updated_customer = crud.change_customer(db, id, customer_data)
-    return {"status": 200, "detail": "Customer updated successfully", "customer": updated_customer}
+    return {"status": 200, "detail": "Customer updated successfully!", "customer": updated_customer}
 
 
 @router.delete("/customer/{id}", response_model=StatusDetails, status_code=201)

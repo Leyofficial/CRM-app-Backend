@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 import crud
 from dependencies import get_db
-from schemas import Deal, StatusDetails, DealInfo, Deals
+from schemas import Deal, StatusDetails, DealDetails, Deals, DealInfo
 
 router = APIRouter(
     prefix="/api",
@@ -16,13 +16,19 @@ def create_deal(data: Deal, db: Session = Depends(get_db)):
     return {"status": 200, "detail": "Success!"}
 
 
-@router.get("/deal/{customer_id}", response_model=Deals)
+@router.get("/deal/customer/{customer_id}", response_model=Deals)
 def get_deal_by_customer_id(customer_id: int, db: Session = Depends(get_db)):
     user_deals = crud.get_deal_by_customer_id(db, customer_id)
     return {"status": 200, "detail": "Success!", "deals": user_deals}
 
 
-@router.get("/deal/{id}", response_model=DealInfo)
+@router.put("/deal/{id}", response_model=DealDetails)
+def change_deal(id: int, data: Deal, db: Session = Depends(get_db)):
+    updated_deal = crud.change_deal(db, data, id)
+    return {"status": 200, "detail": "Deal updated successfully!", "deal": updated_deal}
+
+
+@router.get("/deal/{id}", response_model=DealDetails)
 def get_deal(id: int, db: Session = Depends(get_db)):
     deal = crud.get_deal(db, id)
     return {"status": 200, "detail": "Success!", "deal": deal}

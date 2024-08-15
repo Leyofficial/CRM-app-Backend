@@ -19,7 +19,7 @@ def create_task(data: Task, db: Session = Depends(get_db)):
 @router.put("/task/{id}", response_model=TaskDetails)
 def change_task(id: int, data: Task, db: Session = Depends(get_db)):
     updated_task = crud.change_task(db, data, id)
-    return {'status': 200, 'detail': 'Task updated successfully', 'task': updated_task}
+    return {'status': 200, 'detail': 'Task updated successfully!', 'task': updated_task}
 
 
 @router.get("/task/{id}", response_model=TaskDetails)

@@ -1,5 +1,6 @@
 from datetime import datetime
 from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 import models
 from schemas import CustomerInfo, Task, Deal, Customer
@@ -15,6 +16,12 @@ def get_customer(db: Session, user_id: int):
         raise HTTPException(status_code=404, detail="Customer not found!")
     return customer
 
+
+def get_deal_customer(db: Session, customer_id: int):
+    customer = db.query(models.Customers).filter(models.Customers.id == customer_id).first()
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found!")
+    return customer
 
 def change_customer(db: Session, user_id: int, customer_data: Customer):
     customer = get_customer(db, user_id)
@@ -52,10 +59,6 @@ def create_customer(db: Session, customer: CustomerInfo):
 
 def delete_customer(db: Session, id: int):
     customer = db.query(models.Customers).filter(models.Customers.id == id).first()
-
-    if customer is None:
-        raise HTTPException(status_code=404, detail="Customer not found!")
-
     try:
         db.delete(customer)
         db.commit()
@@ -105,31 +108,28 @@ def get_all_tasks(db: Session):
 
 def create_deal(db: Session, deal: Deal):
     customer_id = deal.customer_id
-    customer = db.query(models.Customers).filter(models.Customers.id == customer_id).first()
-
-    if not customer:
-        raise HTTPException(status_code=404, detail="Customer not found!")
+    customer = get_deal_customer(db, customer_id)
 
     try:
-        db_deal = models.Deals(**deal.dict())
-        db.add(db_deal)
-        db.commit()
-        db.refresh(db_deal)
-        return db_deal
+        if customer:
+            db_deal = models.Deals(**deal.dict())
+            db.add(db_deal)
+            db.commit()
+            db.refresh(db_deal)
+            return db_deal
+
     except Exception as error:
         raise HTTPException(status_code=400, detail=f"Failed to create deal: {str(error)}")
 
 
 def get_deal_by_customer_id(db: Session, customer_id: int):
     customer = get_customer(db, customer_id)
-    if not customer:
-        raise HTTPException(status_code=404, detail="Customer not found!")
+    if customer:
+        deals = db.query(models.Deals).filter(models.Deals.customer_id == customer_id).all()
+        if not deals:
+            raise HTTPException(status_code=404, detail="No deals found for this customer!")
 
-    deals = db.query(models.Deals).filter(models.Deals.customer_id == customer_id).all()
-    if not deals:
-        raise HTTPException(status_code=404, detail="No deals found for this customer!")
-
-    return deals
+        return deals
 
 
 def get_deal(db: Session, id: int):
@@ -139,6 +139,30 @@ def get_deal(db: Session, id: int):
         raise HTTPException(status_code=404, detail="Deal not found!")
 
     return deal
+
+
+def change_deal(db: Session, data: Deal, deal_id: int):
+    try:
+        deal = get_deal(db, deal_id)
+        if deal:
+            deal.address = data.address
+            deal.city = data.city
+            deal.province = data.province
+            deal.zip = data.zip
+            deal.area = data.area
+            deal.people = data.people
+            deal.date = data.date
+            deal.instructions = data.instructions
+            deal.roomAccess = data.roomAccess
+            deal.price = data.price
+            deal.progress = data.progress
+
+            db.commit()
+            db.refresh(deal)
+
+            return deal
+    except SQLAlchemyError as error:
+        raise HTTPException(status_code=400, detail=f"Failed to update deal: {str(error)}")
 
 
 def get_deals(db: Session):

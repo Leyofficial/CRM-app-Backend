@@ -63,7 +63,7 @@ class Tasks(StatusDetails):
     tasks: list[TaskInfo]
 
 
-class Deal(AddressDetails, CustomerId, Id):
+class Deal(AddressDetails, CustomerId):
     area: int
     people: int
     date: date
@@ -76,9 +76,13 @@ class Deal(AddressDetails, CustomerId, Id):
         orm_mode = True
 
 
-class DealInfo(StatusDetails):
-    deal: Deal
+class DealInfo(Deal, Id):
+    pass
+
+
+class DealDetails(StatusDetails):
+    deal: DealInfo
 
 
 class Deals(StatusDetails):
-    deals: list[Deal]
+    deals: list[DealInfo]
