@@ -48,10 +48,15 @@ class Customers(StatusDetails):
 class Task(BaseModel):
     description: str
     date: date
+    is_done: bool
 
 
 class TaskInfo(Task, Id):
-    is_done: bool
+    pass
+
+
+class TaskDetails(StatusDetails):
+    task: Task
 
 
 class Tasks(StatusDetails):

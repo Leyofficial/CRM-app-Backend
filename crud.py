@@ -81,9 +81,21 @@ def create_task(db: Session, task: Task):
 
 
 def get_task(db: Session, task_id: int):
-    task = db.query(models.Customers).filter(models.Tasks.id == task_id).first()
+    task = db.query(models.Tasks).filter(models.Tasks.id == task_id).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found!")
+    return task
+
+
+def change_task(db: Session, data: Task, task_id: int):
+    task = get_task(db, task_id)
+    task.description = data.description
+    task.date = data.date
+    task.is_done = data.is_done
+
+    db.commit()
+    db.refresh(task)
+
     return task
 
 
@@ -99,7 +111,6 @@ def create_deal(db: Session, deal: Deal):
         raise HTTPException(status_code=404, detail="Customer not found!")
 
     try:
-        # Create and commit the deal
         db_deal = models.Deals(**deal.dict())
         db.add(db_deal)
         db.commit()

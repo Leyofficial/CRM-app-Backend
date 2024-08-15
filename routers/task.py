@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 import crud
 from dependencies import get_db
-from schemas import Task, StatusDetails, Tasks
+from schemas import Task, StatusDetails, Tasks, TaskDetails
 
 router = APIRouter(
     prefix="/api",
@@ -16,7 +16,13 @@ def create_task(data: Task, db: Session = Depends(get_db)):
     return {'status': 200, 'detail': 'Success!'}
 
 
-@router.get("/task/{id}")
+@router.put("/task/{id}", response_model=TaskDetails)
+def change_task(id: int, data: Task, db: Session = Depends(get_db)):
+    updated_task = crud.change_task(db, data, id)
+    return {'status': 200, 'detail': 'Task updated successfully', 'task': updated_task}
+
+
+@router.get("/task/{id}", response_model=TaskDetails)
 def get_task(id: int, db: Session = Depends(get_db)):
     task = crud.get_task(db, id)
     return {'status': 200, 'detail': 'Success!', 'task': task}
