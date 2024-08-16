@@ -23,6 +23,7 @@ def get_deal_customer(db: Session, customer_id: int):
         raise HTTPException(status_code=404, detail="Customer not found!")
     return customer
 
+
 def change_customer(db: Session, user_id: int, customer_data: Customer):
     customer = get_customer(db, user_id)
 
@@ -58,11 +59,11 @@ def create_customer(db: Session, customer: CustomerInfo):
 
 
 def delete_customer(db: Session, id: int):
-    customer = db.query(models.Customers).filter(models.Customers.id == id).first()
+    customer = get_customer(db,id)
     try:
         db.delete(customer)
         db.commit()
-        return True
+        return get_all_customers(db)
     except Exception as error:
         raise HTTPException(status_code=400, detail=f"Failed to delete customer: {str(error)}")
 
@@ -100,6 +101,16 @@ def change_task(db: Session, data: Task, task_id: int):
     db.refresh(task)
 
     return task
+
+
+def delete_task(db: Session, task_id: int):
+    task = get_task(db, task_id)
+    try:
+        db.delete(task)
+        db.commit()
+        return get_all_tasks(db)
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=f"Failed to delete task: {str(error)}")
 
 
 def get_all_tasks(db: Session):
@@ -163,6 +174,16 @@ def change_deal(db: Session, data: Deal, deal_id: int):
             return deal
     except SQLAlchemyError as error:
         raise HTTPException(status_code=400, detail=f"Failed to update deal: {str(error)}")
+
+
+def delete_deal(db: Session, id: int):
+    deal = get_deal(db, id)
+    try:
+        db.delete(deal)
+        db.commit()
+        return get_deals(db)
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=f"Failed to delete deal: {str(error)}")
 
 
 def get_deals(db: Session):

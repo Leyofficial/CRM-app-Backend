@@ -22,6 +22,12 @@ def change_task(id: int, data: Task, db: Session = Depends(get_db)):
     return {'status': 200, 'detail': 'Task updated successfully!', 'task': updated_task}
 
 
+@router.delete("/task/{id}", response_model=Tasks)
+def delete_task(id: int, db: Session = Depends(get_db)):
+    tasks = crud.delete_task(db, id)
+    return {'status': 200, 'detail': 'Task deleted successfully!', 'tasks': tasks}
+
+
 @router.get("/task/{id}", response_model=TaskDetails)
 def get_task(id: int, db: Session = Depends(get_db)):
     task = crud.get_task(db, id)

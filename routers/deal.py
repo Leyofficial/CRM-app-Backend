@@ -28,6 +28,12 @@ def change_deal(id: int, data: Deal, db: Session = Depends(get_db)):
     return {"status": 200, "detail": "Deal updated successfully!", "deal": updated_deal}
 
 
+@router.delete("/deal/{id}", response_model=Deals)
+def delete_deal(id: int, db: Session = Depends(get_db)):
+    deals = crud.delete_deal(db, id)
+    return {"status": 200, "detail": "Deal deleted successfully!", "deals": deals}
+
+
 @router.get("/deal/{id}", response_model=DealDetails)
 def get_deal(id: int, db: Session = Depends(get_db)):
     deal = crud.get_deal(db, id)

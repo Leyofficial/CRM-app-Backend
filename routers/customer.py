@@ -35,7 +35,7 @@ def change_customer(id: int, customer_data: Customer, db: Session = Depends(get_
     return {"status": 200, "detail": "Customer updated successfully!", "customer": updated_customer}
 
 
-@router.delete("/customer/{id}", response_model=StatusDetails, status_code=201)
+@router.delete("/customer/{id}", response_model=Customers, status_code=201)
 def delete_customer(id: int, db: Session = Depends(get_db)):
-    crud.delete_customer(db, id)
-    return {"status": 200, "detail": "Customer deleted successfully"}
+    customers = crud.delete_customer(db, id)
+    return {"status": 200, "detail": "Customer deleted successfully!", "customers": customers}
