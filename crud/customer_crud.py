@@ -18,7 +18,7 @@ def get_customer(db: Session, user_id: int):
 
 
 # POST
-def create_customer(db: Session, customer: CustomerInfo):
+def create_customer(db: Session, customer: Customer):
     existing_customer = db.query(models.Customers).filter(models.Customers.email == customer.email).first()
     if existing_customer:
         raise HTTPException(status_code=400, detail="Email already exists!")

@@ -11,7 +11,7 @@ router = APIRouter(
 
 
 @router.post("/customer", response_model=StatusDetails)
-def create_customer(data: CustomerInfo, db: Session = Depends(get_db)):
+def create_customer(data: Customer, db: Session = Depends(get_db)):
     crud.create_customer(db, data)
     return {'status': 200, 'detail': 'Success!'}
 
